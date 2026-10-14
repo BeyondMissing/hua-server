@@ -1,0 +1,42 @@
+<section id="house-goods-modal" class="modal hidden">
+  <form id="house-goods-form" class="modal-card">
+    <div class="modal-head">
+      <h3 id="house-goods-modal-title">新增物品</h3>
+      <button type="button" class="close" id="close-house-goods-modal" aria-label="关闭">×</button>
+    </div>
+    <p id="house-goods-modal-description" class="modal-description"></p>
+    <div id="house-goods-catalog-field">
+      <label for="house-goods-item-id">物品</label>
+      <select id="house-goods-item-id" name="item_id" required></select>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="house-goods-x">X</label>
+        <input id="house-goods-x" name="x" type="number" min="0" max="4294967295" required>
+      </div>
+      <div>
+        <label for="house-goods-y">Y</label>
+        <input id="house-goods-y" name="y" type="number" min="0" max="4294967295" required>
+      </div>
+      <div>
+        <label for="house-goods-z">缩放级别 Z</label>
+        <input id="house-goods-z" name="z" type="number" min="0" max="99" required>
+      </div>
+    </div>
+    <fieldset class="radio-group">
+      <legend>镜像 M</legend>
+      <label><input type="radio" name="m" value="0" required> 正常（0）</label>
+      <label><input type="radio" name="m" value="2" required> 镜像（2）</label>
+    </fieldset>
+    <fieldset class="radio-group">
+      <legend>放置状态</legend>
+      <label><input type="radio" name="is_set" value="0" required> 收回（0）</label>
+      <label><input type="radio" name="is_set" value="1" required> 放置（1）</label>
+    </fieldset>
+    <div id="house-goods-form-error" class="error"></div>
+    <div class="modal-actions">
+      <button type="button" class="secondary" id="cancel-house-goods">取消</button>
+      <button type="submit" class="primary compact">保存</button>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,18 @@
+<section id="tasks-view" class="content-view hidden">
+  <div class="toolbar clothes-heading">
+    <div class="title"><h2>任务管理</h2></div>
+    <form id="tasks-user-form" class="user-lookup">
+      <label for="tasks-user-id">User ID</label>
+      <input id="tasks-user-id" type="number" min="1" max="4294967295" placeholder="输入玩家 User ID" required>
+      <button class="primary compact" type="submit">查询</button>
+    </form>
+  </div>
+  <div id="tasks-workspace" class="hidden">
+    <div class="section-actions"><span id="tasks-owner" class="muted"></span></div>
+    <div class="panel"><div class="table-wrap"><table class="tasks-table">
+      <thead id="tasks-head"></thead>
+      <tbody id="tasks-rows"></tbody>
+    </table><div id="tasks-empty" class="empty hidden">暂无可用任务。</div></div></div>
+  </div>
+  <div id="tasks-prompt" class="query-prompt">输入 User ID 查询该玩家的任务。</div>
+</section>

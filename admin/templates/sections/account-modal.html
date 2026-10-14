@@ -1,0 +1,32 @@
+<section id="modal" class="modal hidden">
+  <form id="account-form" class="modal-card">
+    <div class="modal-head">
+      <h3 id="modal-title">新增账号</h3>
+      <button type="button" class="close" id="close-modal">×</button>
+    </div>
+    <div class="grid">
+      <div>
+        <label for="user-id">User ID</label>
+        <input id="user-id" name="user_id" type="number" min="100000" required>
+      </div>
+      <div>
+        <label for="login-name">登录名（2-8 字符）</label>
+        <input id="login-name" name="login_name" minlength="2" maxlength="8" required>
+      </div>
+      <div class="field-full">
+        <label for="account-password">密码（编辑时留空表示不修改）</label>
+        <input id="account-password" name="password" type="password">
+      </div>
+    </div>
+    <div class="checks">
+      <label><input name="role_created" type="checkbox"> 已创建角色</label>
+      <label><input name="banned" type="checkbox"> 已封禁</label>
+      <label><input name="enable_friends_application" type="checkbox" checked> 接受好友申请</label>
+    </div>
+    <div id="form-error" class="error"></div>
+    <div class="modal-actions">
+      <button type="button" class="secondary" id="cancel">取消</button>
+      <button type="submit" class="primary compact">保存</button>
+    </div>
+  </form>
+</section>

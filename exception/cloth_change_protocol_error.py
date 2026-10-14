@@ -1,0 +1,3 @@
+
+class ClothChangeProtocolError(ValueError):
+    pass

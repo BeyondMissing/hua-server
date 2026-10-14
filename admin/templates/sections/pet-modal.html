@@ -1,0 +1,21 @@
+<section id="pet-modal" class="modal hidden">
+  <form id="pet-form" class="modal-card pet-modal-card">
+    <div class="modal-head"><h3 id="pet-modal-title">编辑宠物</h3><button type="button" class="close" id="close-pet-modal">×</button></div>
+    <div class="grid">
+      <div><label for="pet-user-id">User ID</label><input id="pet-user-id" name="user_id" type="number" min="1" max="4294967295" step="1" required disabled></div>
+      <div><label for="pet-type">宠物类型</label><select id="pet-type" name="pet_id" required></select></div>
+      <div><label for="pet-age">生日</label><input id="pet-age" name="age" type="datetime-local" required></div>
+      <div><label for="pet-love-energy">成长点数（uint32）</label><input id="pet-love-energy" name="love_energy" type="number" min="0" max="4294967295" step="1" required></div>
+      <div><label for="pet-nickname">昵称（2-8 字符）</label><input id="pet-nickname" name="nickname" minlength="2" maxlength="8" required></div>
+      <div><label for="pet-hungry">饥饿值</label><input id="pet-hungry" name="hungry_index" type="number" min="0" max="10000000" step="1" required></div>
+      <div><label for="pet-clean">清洁值</label><input id="pet-clean" name="clean_index" type="number" min="0" max="10000000" step="1" required></div>
+      <div><label for="pet-mood">心情值</label><input id="pet-mood" name="mood_index" type="number" min="0" max="10000000" step="1" required></div>
+      <div><label for="pet-health">健康状态</label><select id="pet-health" name="health_state"><option value="0">健康</option><option value="1">生病</option></select></div>
+      <div><label for="pet-vip">是否 VIP</label><select id="pet-vip" name="is_vip"><option value="0">否</option><option value="1">是</option></select></div>
+      <div><label for="pet-wonderful">奇妙值（uint32）</label><input id="pet-wonderful" name="wonderful_value" type="number" min="0" max="4294967295" step="1" required></div>
+      <div><label for="pet-rest">休息状态</label><select id="pet-rest" name="rest_at"><option value="0">跟随</option><option value="1">花园</option><option value="2">小屋</option></select></div>
+    </div>
+    <div id="pet-form-error" class="error"></div>
+    <div class="modal-actions"><button type="button" class="secondary" id="cancel-pet">取消</button><button type="submit" class="primary compact">保存</button></div>
+  </form>
+</section>

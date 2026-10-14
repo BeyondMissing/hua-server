@@ -1,0 +1,24 @@
+<section id="gardens-view" class="content-view hidden">
+  <div class="toolbar">
+    <div class="title"><h2>花园管理</h2></div>
+    <div class="actions">
+      <input id="garden-user-id-filter" type="number" min="1" placeholder="User ID">
+      <button id="garden-apply" class="secondary" type="button">筛选</button>
+      <button id="garden-reset" class="plain-button" type="button">刷新</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="table-wrap">
+      <table class="gardens-table">
+        <thead><tr><th>User ID</th><th>背景</th><th>门牌</th><th>天气</th><th>温度</th><th>小屋</th><th>X</th><th>Y</th><th>开启</th><th>操作</th></tr></thead>
+        <tbody id="garden-rows"></tbody>
+      </table>
+    </div>
+    <div id="garden-empty" class="empty hidden">没有符合条件的玩家。</div>
+    <div class="pager"><span id="garden-summary"></span><div class="pager-controls">
+      <label for="garden-page-size">每页</label>
+      <select id="garden-page-size"><option value="10">10 条</option><option value="50">50 条</option><option value="100">100 条</option></select>
+      <button id="garden-prev" type="button">上一页</button><button id="garden-next" type="button">下一页</button>
+    </div></div>
+  </div>
+</section>

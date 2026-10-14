@@ -1,0 +1,26 @@
+<section id="profiles-view" class="content-view hidden">
+  <div class="toolbar">
+    <div class="title"><h2>玩家资料</h2></div>
+    <div class="actions">
+      <input id="profile-user-id-filter" type="number" min="1" placeholder="User ID">
+      <input id="profile-nickname-filter" placeholder="昵称">
+      <select id="profile-nationality-filter"><option value="">全部国籍</option></select>
+      <button id="profile-apply" class="secondary" type="button">筛选</button>
+      <button id="profile-refresh" class="plain-button" type="button">刷新</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="table-wrap">
+      <table class="profiles-table">
+        <thead><tr><th>User ID</th><th>昵称</th><th>国籍</th><th>注册时间</th><th>最近登录</th><th>操作</th></tr></thead>
+        <tbody id="profile-rows"></tbody>
+      </table>
+    </div>
+    <div id="profile-empty" class="empty hidden">没有符合条件的玩家。</div>
+    <div class="pager"><span id="profile-summary"></span><div class="pager-controls">
+      <label for="profile-page-size">每页</label>
+      <select id="profile-page-size"><option value="20">20 条</option><option value="50">50 条</option><option value="100">100 条</option></select>
+      <button id="profile-prev" type="button">上一页</button><button id="profile-next" type="button">下一页</button>
+    </div></div>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<section id="clothing-modal" class="modal hidden">
+  <form id="clothing-form" class="modal-card small-modal">
+    <div class="modal-head">
+      <h3>获得服装</h3>
+      <button type="button" class="close" id="close-clothing-modal" aria-label="关闭">×</button>
+    </div>
+    <p id="clothing-modal-name" class="modal-description"></p>
+    <label for="acquired-at">获得时间</label>
+    <input id="acquired-at" name="acquired_at" type="datetime-local" step="1" required>
+    <div id="clothing-form-error" class="error"></div>
+    <div class="modal-actions">
+      <button type="button" class="secondary" id="cancel-clothing">取消</button>
+      <button type="submit" class="primary compact">确定</button>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hua 2013 · 管理后台</title>
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+$login_section
+<section id="app" class="app hidden">
+  <header>
+    <strong>Hua 2013 <span id="header-section">/ 账号管理</span></strong>
+    <div>
+      <span>管理员：admin</span>
+      <button id="logout" class="logout">退出登录</button>
+    </div>
+  </header>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="后台导航">
+
+      <button class="nav-item active" data-view="accounts">账号管理</button>
+      <button class="nav-item" data-view="profiles">玩家资料</button>
+      <button class="nav-item" data-view="actions">动作管理</button>
+      <button class="nav-item" data-view="clothes">服装管理</button>
+
+      <button class="nav-item" data-view="gardens">花园管理</button>
+      <button class="nav-item" data-view="tools">工具管理</button>
+      <button class="nav-item" data-view="houses">小屋管理</button>
+      <button class="nav-item" data-view="house-goods">小屋物品</button>
+
+      <button class="nav-item" data-view="materials">材料管理</button>
+      <button class="nav-item" data-view="seeds">种子管理</button>
+      <button class="nav-item" data-view="pollens">花粉管理</button>
+      <button class="nav-item" data-view="flowers">花朵管理</button>
+
+      <button class="nav-item" data-view="pets">宠物管理</button>
+      <button class="nav-item" data-view="pet-supplies">宠物用品</button>
+
+      <button class="nav-item" data-view="tasks">任务管理</button>
+    </aside>
+    <main>
+$accounts_section
+$profiles_section
+$pets_section
+$gardens_section
+$clothes_section
+$house_goods_section
+$actions_section
+$flowers_section
+$seeds_section
+$materials_section
+$pet_supplies_section
+$tools_section
+$pollens_section
+$houses_section
+$tasks_section
+    </main>
+  </div>
+</section>
+$account_modal_section
+$clothing_modal_section
+$profile_modal_section
+$pet_modal_section
+$profile_clothing_modal_section
+$house_goods_modal_section
+$action_modal_section
+$inventory_modal_section
+$garden_modal_section
+<script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

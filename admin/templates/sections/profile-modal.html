@@ -1,0 +1,24 @@
+<section id="profile-modal" class="modal hidden">
+  <form id="profile-form" class="modal-card profile-modal-card">
+    <div class="modal-head"><h3>编辑玩家资料</h3><button type="button" class="close" id="close-profile-modal">×</button></div>
+    <div class="grid">
+      <div><label for="profile-user-id">User ID</label><input id="profile-user-id" disabled></div>
+      <div><label for="profile-nickname">昵称（2-8 字符）</label><input id="profile-nickname" name="nickname" minlength="2" maxlength="8" required></div>
+      <div><label for="profile-nationality">国籍</label><select id="profile-nationality" name="nationality" required></select></div>
+      <div><label for="profile-birthday">星座</label><select id="profile-birthday" name="birthday" required></select></div>
+      <div><label for="profile-love">爱心值</label><input id="profile-love" name="love" type="number" min="0" required></div>
+      <div><label for="profile-beautiful">美丽值</label><input id="profile-beautiful" name="beautiful" type="number" min="0" required></div>
+      <div><label for="profile-wisdom">智慧值</label><input id="profile-wisdom" name="wisdom" type="number" min="0" required></div>
+      <div><label for="profile-plant-grade">种植等级</label><input id="profile-plant-grade" name="plant_grade" type="number" min="1" required></div>
+      <div><label for="profile-faerie-grade">精灵等级</label><input id="profile-faerie-grade" name="faerie_grade" type="number" min="1" required></div>
+      <div><label for="profile-money">仙豆</label><input id="profile-money" name="money" type="number" min="0" required></div>
+      <div><label for="profile-face-color">肤色</label><select id="profile-face-color" name="face_color" required></select></div>
+      <div><label for="profile-face">脸型</label><select id="profile-face" name="face" required></select></div>
+      <div><label for="profile-eye">眼型</label><select id="profile-eye" name="eye" required></select></div>
+      <div><label for="profile-eyebrow">眉型</label><select id="profile-eyebrow" name="eyebrow" required></select></div>
+      <div><label for="profile-lip">嘴型</label><select id="profile-lip" name="lip" required></select></div>
+    </div>
+    <div id="profile-form-error" class="error"></div>
+    <div class="modal-actions"><button type="button" class="secondary" id="cancel-profile">取消</button><button type="submit" class="primary compact">保存</button></div>
+  </form>
+</section>

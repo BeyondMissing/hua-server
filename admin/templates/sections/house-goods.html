@@ -1,0 +1,54 @@
+<section id="house-goods-view" class="content-view hidden">
+  <div class="toolbar clothes-heading">
+    <div class="title">
+      <h2>小屋物品管理</h2>
+    </div>
+    <form id="house-goods-user-form" class="user-lookup">
+      <label for="house-goods-user-id">User ID</label>
+      <input id="house-goods-user-id" type="number" min="1" placeholder="输入玩家 User ID" required>
+      <button class="primary compact" type="submit">查询</button>
+    </form>
+  </div>
+
+  <div id="house-goods-workspace" class="hidden">
+    <div class="section-actions">
+      <span id="house-goods-owner" class="muted"></span>
+      <button id="new-house-goods" class="primary compact" type="button">新增物品</button>
+    </div>
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="house-goods-table">
+          <thead>
+            <tr>
+              <th>Item ID</th>
+              <th>名称</th>
+              <th>序号</th>
+              <th>X</th>
+              <th>Y</th>
+              <th>镜像</th>
+              <th>缩放级别</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="house-goods-rows"></tbody>
+        </table>
+      </div>
+      <div id="house-goods-empty" class="empty hidden">该玩家暂无小屋物品，可点击“新增物品”添加。</div>
+      <div class="pager">
+        <span id="house-goods-summary"></span>
+        <div class="pager-controls">
+          <label for="house-goods-page-size">每页</label>
+          <select id="house-goods-page-size">
+            <option value="10">10 条</option>
+            <option value="50">50 条</option>
+            <option value="100">100 条</option>
+          </select>
+          <button id="house-goods-prev" type="button">上一页</button>
+          <button id="house-goods-next" type="button">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="house-goods-prompt" class="query-prompt">输入 User ID 查询该玩家的全部小屋物品。</div>
+</section>

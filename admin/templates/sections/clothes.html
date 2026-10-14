@@ -1,0 +1,71 @@
+<section id="clothes-view" class="content-view hidden">
+  <div class="toolbar clothes-heading">
+    <div class="title">
+      <h2>服装管理</h2>
+    </div>
+    <form id="clothes-user-form" class="user-lookup">
+      <label for="clothes-user-id">User ID</label>
+      <input id="clothes-user-id" type="number" min="1" placeholder="输入玩家 User ID" required>
+      <button class="primary compact" type="submit">查询</button>
+    </form>
+  </div>
+
+  <div id="clothes-workspace" class="hidden">
+    <div class="filter-bar">
+      <div>
+        <label for="clothes-name">名称</label>
+        <input id="clothes-name" placeholder="按服装名称过滤">
+      </div>
+      <div>
+        <label for="clothes-sex">性别</label>
+        <select id="clothes-sex">
+          <option value="">全部</option>
+          <option value="0">未知</option>
+          <option value="1">女</option>
+          <option value="2">男</option>
+        </select>
+      </div>
+      <div>
+        <label for="clothes-type">服装类型</label>
+        <select id="clothes-type">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <button id="apply-clothes-filters" class="secondary" type="button">筛选</button>
+      <button id="reset-clothes-filters" class="plain-button" type="button">重置</button>
+    </div>
+
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="clothes-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>名称</th>
+              <th>性别</th>
+              <th>服装类型</th>
+              <th>获得时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="clothes-rows"></tbody>
+        </table>
+      </div>
+      <div id="clothes-empty" class="empty hidden">没有符合条件的服装。</div>
+      <div class="pager clothes-pager">
+        <span id="clothes-summary"></span>
+        <div class="pager-controls">
+          <label for="clothes-page-size">每页</label>
+          <select id="clothes-page-size">
+            <option value="10">10 条</option>
+            <option value="50">50 条</option>
+            <option value="100">100 条</option>
+          </select>
+          <button id="clothes-prev" type="button">上一页</button>
+          <button id="clothes-next" type="button">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="clothes-prompt" class="query-prompt">输入 User ID 查询该玩家的全部服装。</div>
+</section>

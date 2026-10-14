@@ -1,0 +1,20 @@
+<section id="action-modal" class="modal hidden">
+  <form id="action-form" class="modal-card small-modal">
+    <div class="modal-head">
+      <h3 id="action-modal-title">新增动作</h3>
+      <button type="button" class="close" id="close-action-modal" aria-label="关闭">×</button>
+    </div>
+    <p id="action-modal-description" class="modal-description"></p>
+    <div id="action-catalog-field">
+      <label for="action-id">动作</label>
+      <select id="action-id" name="action_id" required></select>
+    </div>
+    <label for="action-amount">数量</label>
+    <input id="action-amount" name="amount" type="number" min="0" max="4294967295" required>
+    <div id="action-form-error" class="error"></div>
+    <div class="modal-actions">
+      <button type="button" class="secondary" id="cancel-action">取消</button>
+      <button type="submit" class="primary compact">保存</button>
+    </div>
+  </form>
+</section>

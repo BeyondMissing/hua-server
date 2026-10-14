@@ -1,0 +1,36 @@
+<section id="actions-view" class="content-view hidden">
+  <div class="toolbar clothes-heading">
+    <div class="title">
+      <h2>动作管理</h2>
+    </div>
+    <form id="actions-user-form" class="user-lookup">
+      <label for="actions-user-id">User ID</label>
+      <input id="actions-user-id" type="number" min="1" max="4294967295" placeholder="输入玩家 User ID" required>
+      <button class="primary compact" type="submit">查询</button>
+    </form>
+  </div>
+
+  <div id="actions-workspace" class="hidden">
+    <div class="section-actions">
+      <span id="actions-owner" class="muted"></span>
+      <button id="new-action" class="primary compact" type="button">新增动作</button>
+    </div>
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="actions-table">
+          <thead>
+            <tr>
+              <th>Action ID</th>
+              <th>名称</th>
+              <th>剩余次数</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="actions-rows"></tbody>
+        </table>
+      </div>
+      <div id="actions-empty" class="empty hidden">该玩家暂无动作，可点击“新增动作”添加。</div>
+    </div>
+  </div>
+  <div id="actions-prompt" class="query-prompt">输入 User ID 查询该玩家的全部动作。</div>
+</section>

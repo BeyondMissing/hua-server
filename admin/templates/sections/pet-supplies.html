@@ -1,0 +1,9 @@
+<section id="pet-supplies-view" class="content-view hidden">
+  <div class="toolbar clothes-heading"><div class="title"><h2>宠物用品</h2></div>
+    <form id="pet-supplies-user-form" class="user-lookup"><label for="pet-supplies-user-id">User ID</label><input id="pet-supplies-user-id" type="number" min="1" max="4294967295" placeholder="输入玩家 User ID" required><button class="primary compact" type="submit">查询</button></form>
+  </div>
+  <div id="pet-supplies-workspace" class="hidden"><div class="section-actions"><span id="pet-supplies-owner" class="muted"></span><button id="new-pet-supplies" class="primary compact" type="button">新增宠物用品</button></div>
+    <div class="filter-bar inventory-filters"><div><label for="pet-supplies-name">名称</label><input id="pet-supplies-name" placeholder="按名称筛选"></div><button id="pet-supplies-apply" class="secondary" type="button">筛选</button><button id="pet-supplies-reset" class="plain-button" type="button">重置</button></div>
+    <div class="panel"><div class="table-wrap"><table class="pet-supplies-table"><thead><tr><th>用品名称</th><th>等级</th><th>饥饿</th><th>清洁</th><th>心情</th><th>剩余数量</th><th>操作</th></tr></thead><tbody id="pet-supplies-rows"></tbody></table></div><div id="pet-supplies-empty" class="empty hidden">没有符合条件的宠物用品。</div><div class="pager"><span id="pet-supplies-summary"></span></div></div>
+  </div><div id="pet-supplies-prompt" class="query-prompt">输入 User ID 查询该玩家的宠物用品。</div>
+</section>

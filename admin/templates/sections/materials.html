@@ -1,0 +1,9 @@
+<section id="materials-view" class="content-view hidden">
+  <div class="toolbar clothes-heading"><div class="title"><h2>材料管理</h2></div>
+    <form id="materials-user-form" class="user-lookup"><label for="materials-user-id">User ID</label><input id="materials-user-id" type="number" min="1" max="4294967295" placeholder="输入玩家 User ID" required><button class="primary compact" type="submit">查询</button></form>
+  </div>
+  <div id="materials-workspace" class="hidden"><div class="section-actions"><span id="materials-owner" class="muted"></span><button id="new-materials" class="primary compact" type="button">新增材料</button></div>
+    <div class="filter-bar inventory-filters"><div><label for="materials-name">名称</label><input id="materials-name" placeholder="按名称筛选"></div><button id="materials-apply" class="secondary" type="button">筛选</button><button id="materials-reset" class="plain-button" type="button">重置</button></div>
+    <div class="panel"><div class="table-wrap"><table class="inventory-table"><thead><tr><th>Item ID</th><th>名称</th><th>数量</th><th>操作</th></tr></thead><tbody id="materials-rows"></tbody></table></div><div id="materials-empty" class="empty hidden">没有符合条件的材料。</div><div class="pager"><span id="materials-summary"></span><div class="pager-controls"><label for="materials-page-size">每页</label><select id="materials-page-size"><option value="10">10 条</option><option value="50">50 条</option><option value="100">100 条</option></select><button id="materials-prev" type="button">上一页</button><button id="materials-next" type="button">下一页</button></div></div></div>
+  </div><div id="materials-prompt" class="query-prompt">输入 User ID 查询该玩家的材料。</div>
+</section>

@@ -1,0 +1,21 @@
+<section id="garden-modal" class="modal hidden">
+  <form id="garden-form" class="modal-card garden-modal-card">
+    <div class="modal-head"><h3>编辑花园</h3><button type="button" class="close" id="close-garden-modal" aria-label="关闭">×</button></div>
+    <div class="grid">
+      <div><label for="garden-user-id">User ID</label><input id="garden-user-id" disabled></div>
+      <div><label for="garden-background">背景</label><select id="garden-background" name="background_id" required></select></div>
+      <div><label for="garden-home-name">门牌</label><input id="garden-home-name" name="home_name" maxlength="64" required></div>
+      <div><label for="garden-weather">天气</label><select id="garden-weather" name="weather" required></select></div>
+      <div><label for="garden-temperature">温度</label><input id="garden-temperature" name="temperature" maxlength="64" required></div>
+      <div><label for="garden-house">小屋</label><select id="garden-house" name="item_id" required></select></div>
+      <div><label for="garden-x">小屋 X</label><input id="garden-x" name="x" type="number" min="0" max="4294967295" step="1" required></div>
+      <div><label for="garden-y">小屋 Y</label><input id="garden-y" name="y" type="number" min="0" max="4294967295" step="1" required></div>
+    </div>
+    <fieldset class="radio-group"><legend>开启</legend>
+      <label><input type="radio" name="open_flag" value="1" required> 是</label>
+      <label><input type="radio" name="open_flag" value="0" required> 否</label>
+    </fieldset>
+    <div id="garden-form-error" class="error"></div>
+    <div class="modal-actions"><button type="button" class="secondary" id="cancel-garden">取消</button><button type="submit" class="primary compact">保存</button></div>
+  </form>
+</section>

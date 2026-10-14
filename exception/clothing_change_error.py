@@ -1,0 +1,3 @@
+
+class ClothingChangeError(ValueError):
+    pass

@@ -1,0 +1,3 @@
+
+class SocialProtocolError(ValueError):
+    pass
