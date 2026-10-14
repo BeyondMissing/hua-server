@@ -1221,6 +1221,8 @@ class AccountStore:
         unique_status = None
         if 100000 <= item_id < 200000:
             catalog_table, inventory_table, unique_status = "type_clothes", "player_clothes", 10
+        elif 200000 <= item_id < 300000:
+            catalog_table, inventory_table = "type_seeds", "player_seeds"
         elif 300000 <= item_id < 400000:
             catalog_table, inventory_table = "type_home_props", "player_home_props"
         elif 400000 <= item_id < 500000:
@@ -1336,12 +1338,83 @@ class AccountStore:
             self.connection.rollback()
             raise
 
+    def sell_flower(self, user_id: int, flower_id: int, amount: int):
+        """Sell owned flowers and return ``(status, earned_money)``."""
+        self._ensure_connection()
+        user_id, flower_id, amount = map(int, (user_id, flower_id, amount))
+        if amount < 1 or amount > 0xFFFFFFFF:
+            return 1206, 0
+
+        try:
+            self.connection.begin()
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT sell FROM type_flowers WHERE id=%s LIMIT 1 FOR UPDATE",
+                    (flower_id,),
+                )
+                flower = cursor.fetchone()
+                sell_price = None if not flower else flower.get("sell")
+                if sell_price is None or int(sell_price) < 0:
+                    self.connection.rollback()
+                    return 10008, 0
+                income = int(sell_price) * amount
+
+                cursor.execute(
+                    "SELECT money FROM player_profiles WHERE user_id=%s LIMIT 1 FOR UPDATE",
+                    (user_id,),
+                )
+                profile = cursor.fetchone()
+                if profile is None:
+                    self.connection.rollback()
+                    return 5001, 0
+                if int(profile.get("money") or 0) + income > 0xFFFFFFFF:
+                    self.connection.rollback()
+                    return 5001, 0
+
+                cursor.execute(
+                    "UPDATE player_flowers SET amount=amount-%s "
+                    "WHERE user_id=%s AND item_id=%s AND amount>=%s",
+                    (amount, user_id, flower_id, amount),
+                )
+                if cursor.rowcount != 1:
+                    self.connection.rollback()
+                    return 140, 0
+                cursor.execute(
+                    "UPDATE player_profiles SET money=money+%s WHERE user_id=%s",
+                    (income, user_id),
+                )
+            self.connection.commit()
+            return 0, income
+        except Exception:
+            self.connection.rollback()
+            raise
+
     def rows(self, table: str, user_id: int):
         self._ensure_connection()
         key = "map_id" if table == "map_items" else "user_id"
         with self.connection.cursor() as cursor:
             cursor.execute(f"SELECT * FROM {table} WHERE {key}=%s", (user_id,))
             return list(cursor.fetchall() or [])
+
+    def map_materials(self, map_id: int):
+        """Return the configured pickable materials for one outdoor map."""
+        self._ensure_connection()
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT item_id, x, y FROM map_materials WHERE map_id=%s ORDER BY id",
+                (int(map_id),),
+            )
+            return list(cursor.fetchall() or [])
+
+    def add_map_material(self, user_id: int, item_id: int) -> None:
+        """Add one picked map material, creating its inventory row if needed."""
+        self._ensure_connection()
+        with self.connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO player_materials (user_id, item_id, amount) VALUES (%s, %s, 1) "
+                "ON DUPLICATE KEY UPDATE amount=amount+1",
+                (int(user_id), int(item_id)),
+            )
 
     def home_state(self, user_id: int):
         """Load the four storage groups used by the home-entry push frames."""
