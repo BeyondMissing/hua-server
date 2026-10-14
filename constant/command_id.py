@@ -29,11 +29,13 @@ CMD_PVE_GAME_OVER_COMMON_COMMAND = 1634
 CMD_CHAT_INFO = 1020
 CMD_MEDAL_FAVOR = 1027
 CMD_PICK_UP_JOB = 1028
+CMD_PICK_UP_MAP = 1029
 CMD_USE_GOOD = 1039
 CMD_FAIRY_ACTION = 1032
 CMD_ITEM_TYPE_INFO = 1034
 # Shop balance query (GET_MY_MONEY in the AS3 client).
 CMD_GET_MY_MONEY = 1105
+CMD_SELL_MY_FLOWER = 1106
 # Shop monthly half-price status (SHOP_HALF_DAY in the AS3 client).
 CMD_SHOP_HALF_DAY = 1045
 # Legacy inventory query used by the background selector.  It is distinct

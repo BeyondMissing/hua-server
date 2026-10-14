@@ -1,4 +1,5 @@
 import secrets
+import random
 import struct
 import time
 import asyncio
@@ -55,6 +56,12 @@ from storage.synthetic_game_store import SyntheticGameError, ATTRIBUTE_BY_GAME
 
 from stream import _u32, fixed_utf8
 from utils import _profile_value, _enter_map_eff_payload
+
+
+# The legacy map-material table stores one potential pickup per row but has
+# no per-row rate.  Roll every configured location independently so maps do
+# not reveal all of their materials every time they are entered.
+MAP_MATERIAL_SPAWN_RATE = 0.5
 
 
 class HuaOnlineApplication:
@@ -114,9 +121,11 @@ class HuaOnlineApplication:
         server.on(CMD_MEDAL_FAVOR, self.medal_favor)
         server.on(CMD_FAIRY_ACTION, self.fairy_action)
         server.on(CMD_GET_MY_MONEY, self.get_my_money)
+        server.on(CMD_SELL_MY_FLOWER, self.sell_my_flower)
         server.on(CMD_SHOP_HALF_DAY, self.shop_half_day)
         server.on(CMD_GET_ITEM, self.get_item)
         server.on(CMD_PICK_UP_JOB, self.pick_up_job)
+        server.on(CMD_PICK_UP_MAP, self.pick_up_map)
         server.on(CMD_USE_GOOD, self.use_good)
         server.on(CMD_START_JOB, self.start_job)
         server.on(CMD_OVER_JOB, self.over_job)
@@ -450,6 +459,28 @@ class HuaOnlineApplication:
             struct.pack(">2I", purchased_id, purchased_quantity),
             user_id=account.user_id,
         )
+
+    def sell_my_flower(self, session, packet):
+        """Sell flowers through SELL_MY_FLOWER (1106)."""
+        account = session.state.get("account")
+        if not account or packet.user_id not in (0, account.user_id):
+            return Response(user_id=packet.user_id, status=401)
+        if len(packet.payload) != 12:
+            return Response(user_id=account.user_id, status=400)
+
+        _unknown, flower_id, amount = struct.unpack(">3I", packet.payload)
+        try:
+            status, income = self.accounts.sell_flower(account.user_id, flower_id, amount)
+        except Exception as exc:
+            LOG.exception(
+                "SELL_MY_FLOWER failed for uid=%s flower=%s amount=%s: %s",
+                account.user_id, flower_id, amount, exc,
+            )
+            return Response(user_id=account.user_id, status=5001)
+        if status:
+            return Response(user_id=account.user_id, status=status)
+        # SellModule.gotmoney reads exactly one uint32: this sale's income.
+        return Response(struct.pack(">I", income), user_id=account.user_id)
 
     def shop_half_day(self, session, packet):
         """Return whether the requested shop is half-price today (1045)."""
@@ -1303,6 +1334,31 @@ class HuaOnlineApplication:
             for job_id, step in completed
         )
         return responses
+
+    def pick_up_map(self, session, packet):
+        """Grant one map material picked through PICK_UP_MAP (1029)."""
+        account = session.state.get("account")
+        if not account or packet.user_id not in (0, account.user_id):
+            return Response(user_id=packet.user_id, status=401)
+        if len(packet.payload) != 12:
+            return Response(user_id=account.user_id, status=400)
+
+        item_id, item_x, item_y = struct.unpack(">3I", packet.payload)
+        try:
+            self.accounts.add_map_material(account.user_id, item_id)
+        except Exception as exc:
+            LOG.exception(
+                "PICK_UP_MAP grant failed for uid=%s item=%s x=%s y=%s: %s",
+                account.user_id, item_id, item_x, item_y, exc,
+            )
+            return Response(user_id=account.user_id, status=5001)
+
+        # PickUpModule decodes this acknowledgement as user/item/x/y/qid.
+        # qid=0 denotes an ordinary material with no questionnaire follow-up.
+        return Response(
+            struct.pack(">5I", account.user_id, item_id, item_x, item_y, 0),
+            user_id=account.user_id,
+        )
 
     def start_job(self, session, packet):
         """Accept one task step (START_JOB, 1051)."""
@@ -2704,13 +2760,25 @@ class HuaOnlineApplication:
 
     def map_items(self,s,p):
         a = s.state.get('account')
-        rows = []
-        if a:
-            try:
-                rows = self.accounts.rows('map_items', _u32(s.state.get('map_id', _profile_value(a,'map_id',1))))
-            except Exception:
-                rows = []
-        out = bytearray(struct.pack('>I',len(rows)))
-        for r in rows:
-            out += struct.pack('>3I',_u32(r.get('item_id')), _u32(r.get('item_x')), _u32(r.get('item_y')))
-        return Response(bytes(out), user_id=p.user_id)
+        if not a or p.user_id not in (0, a.user_id):
+            return Response(user_id=p.user_id, status=401)
+        if p.payload:
+            return Response(user_id=a.user_id, status=400)
+
+        map_id = _u32(s.state.get('map_id', _profile_value(a, 'map_id', 1)))
+        try:
+            rows = self.accounts.map_materials(map_id)
+        except Exception as exc:
+            LOG.warning("MAP_GET_PICKITEM query failed for map=%s: %s", map_id, exc)
+            return Response(user_id=a.user_id, status=5001)
+
+        rows = [row for row in rows if random.random() < MAP_MATERIAL_SPAWN_RATE]
+        out = bytearray(struct.pack('>I', len(rows)))
+        for row in rows:
+            out += struct.pack(
+                '>3I',
+                _u32(row.get('item_id')),
+                _u32(row.get('x')),
+                _u32(row.get('y')),
+            )
+        return Response(bytes(out), user_id=a.user_id)
