@@ -4,6 +4,7 @@ from __future__ import annotations
 
 
 _TASK_INVENTORY_TYPES = {
+    1: ("player_clothes", "cloth_id", "COUNT(*)"),
     2: ("player_seeds", "item_id", "amount"),
     5: ("player_house_goods", "item_id", "COUNT(*)"),
     7: ("player_flowers", "item_id", "amount"),
@@ -73,10 +74,14 @@ def _task_inventory_amounts(connection, user_id: int, item_ids: set[int]) -> dic
     with connection.cursor() as cursor:
         for (table, column, amount_expression), grouped_ids in grouped.items():
             placeholders = ",".join(["%s"] * len(grouped_ids))
-            if table == "player_house_goods":
+            if amount_expression == "COUNT(*)":
+                # Clothes and house goods are stored as one row per item.
+                # They do not have an ``amount`` column, so aggregate rows
+                # directly instead of wrapping COUNT(*) in SUM(...).
+                extra_filter = " AND is_set=0" if table == "player_house_goods" else ""
                 query = (
                     f"SELECT {column} AS item_id, COUNT(*) AS amount "
-                    f"FROM {table} WHERE user_id=%s AND is_set=0 "
+                    f"FROM {table} WHERE user_id=%s{extra_filter} "
                     f"AND {column} IN ({placeholders}) GROUP BY {column}"
                 )
             else:
