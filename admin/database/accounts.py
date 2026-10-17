@@ -1,3 +1,4 @@
+import time
 from typing import Any
 
 import pymysql
@@ -9,6 +10,8 @@ from admin.core.validation import validate_account
 
 class AccountRepository:
     """Parameterised account queries against the existing accounts table."""
+
+    INITIAL_CLOTH_IDS = (100004, 100007, 100008, 100009, 100010, 100011, 100012, 100013)
 
     def __init__(self, mysql_config: dict[str, Any]):
         self.mysql_config = dict(mysql_config)
@@ -98,8 +101,36 @@ class AccountRepository:
         fields = list(ACCOUNT_FIELDS)
         placeholders = ", ".join(["%s"] * len(fields))
         sql = f"INSERT INTO accounts ({', '.join(fields)}) VALUES ({placeholders})"
-        with self.connection.cursor() as cursor:
-            cursor.execute(sql, [values[field] for field in fields])
+        user_id = values["user_id"]
+        login_name = values["login_name"]
+        now = int(time.time())
+
+        # Account creation initializes the records required by the game in one
+        # transaction so a failed related insert cannot leave a partial account.
+        self.connection.begin()
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql, [values[field] for field in fields])
+                cursor.execute(
+                    "INSERT INTO player_profiles "
+                    "(user_id, nickname, map_id, map_x, map_y, new_user_job, "
+                    "login_time, reg_time, money) "
+                    "VALUES (%s, %s, 1, 400, 400, 11, %s, %s, 500)",
+                    (user_id, login_name, now, now),
+                )
+                cursor.execute(
+                    "INSERT INTO player_homes (user_id, home_name, weather, temperature) "
+                    "VALUES (%s, %s, 6, %s)",
+                    (user_id, login_name, "晴天23℃~30℃"),
+                )
+                cursor.executemany(
+                    "INSERT INTO player_clothes (user_id, cloth_id) VALUES (%s, %s)",
+                    [(user_id, cloth_id) for cloth_id in self.INITIAL_CLOTH_IDS],
+                )
+            self.connection.commit()
+        except Exception:
+            self.connection.rollback()
+            raise
         return self.get(values["user_id"])
 
     def update(self, user_id: int, data: dict[str, Any]) -> dict[str, Any] | None:

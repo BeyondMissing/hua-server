@@ -141,6 +141,7 @@ class HuaOnlineApplication:
         server.on(CMD_PET_USETOOL, self.pet_use_tool)
         server.on(CMD_PET_BACK, self.pet_back)
         server.on(CMD_PET_CHANG_NICK, self.pet_change_nick)
+        server.on(CMD_PET_IN_ORPHANAGE, self.pet_in_orphanage)
         server.on(CMD_PETLETTER_LIST_TASK, self.pet_letter_list_task)
         server.on(CMD_PETLETTER_LIST_MOOD, self.pet_letter_list_mood)
         server.on(CMD_PETLETTER_READ_MOOD, self.pet_letter_read_mood)
@@ -1426,7 +1427,7 @@ class HuaOnlineApplication:
         if len(packet.payload) != 12:
             return Response(user_id=account.user_id, status=400)
         event_id, job_id, step = struct.unpack(">3I", packet.payload)
-        if event_id == 4:
+        if event_id in (4, 6):
             try:
                 self.accounts.complete_task_event(account.user_id, job_id, step)
             except Exception:
@@ -2018,6 +2019,20 @@ class HuaOnlineApplication:
             LOG.exception("HOME_PET_INFO query failed for owner=%s", owner_id)
             return Response(user_id=account.user_id, status=5001)
         return Response(pet_simple_info_payload(pets), user_id=0)
+
+    def pet_in_orphanage(self, session, packet):
+        """Return the orphanage pet list (10213), which is always empty.
+
+        The orphanage feature is disabled, but the client still queries this
+        command while opening the related NPC/login flow.  Its response is a
+        uint32 count followed by zero pet records.
+        """
+        account = session.state.get("account")
+        if not account or packet.user_id not in (0, account.user_id):
+            return Response(user_id=packet.user_id, status=401)
+        if packet.payload:
+            return Response(user_id=account.user_id, status=400)
+        return Response(struct.pack(">I", 0), user_id=account.user_id)
 
     def pet_follow(self, session, packet):
         account = session.state.get("account")

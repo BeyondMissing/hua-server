@@ -635,9 +635,46 @@ class AccountStore:
             return cursor.rowcount
 
     def add_task_item_and_progress(self, user_id: int, item_id: int) -> list[tuple[int, int]]:
-        """Store a pickup and increment every active job step requiring it."""
+        """Store a pickup and advance every active job step requiring it.
+
+        Item ID zero is the protocol's event-based pickup marker; it completes
+        the active ``req_event=1/4`` step without creating an inventory row.
+        """
         self._ensure_connection()
         user_id, item_id = int(user_id), int(item_id)
+
+        # PICK_UP_JOB (1028) uses item ID zero for event-based task items.
+        # There is no inventory row to create in this case: complete the
+        # player's current step whose task definition carries req_event=1/4.
+        if item_id == 0:
+            with self.connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT DISTINCT progress.job_id, progress.step "
+                    "FROM player_task_progress AS progress "
+                    "INNER JOIN task_list AS task "
+                    "ON task.main_id=progress.job_id AND task.id=progress.step "
+                    "WHERE progress.user_id=%s AND task.req_event=%s "
+                    "AND progress.flag=1 "
+                    "AND progress.process < progress.total_process",
+                    (user_id, "1/4"),
+                )
+                completed = [
+                    (int(row["job_id"]), int(row["step"]))
+                    for row in (cursor.fetchall() or [])
+                ]
+                if completed:
+                    cursor.execute(
+                        "UPDATE player_task_progress AS progress "
+                        "INNER JOIN task_list AS task "
+                        "ON task.main_id=progress.job_id AND task.id=progress.step "
+                        "SET progress.process=progress.total_process "
+                        "WHERE progress.user_id=%s AND task.req_event=%s "
+                        "AND progress.flag=1 "
+                        "AND progress.process < progress.total_process",
+                        (user_id, "1/4"),
+                    )
+            return completed
+
         self.add_task_item(user_id, item_id)
         over = []
         with self.connection.cursor() as cursor:
@@ -1760,8 +1797,11 @@ class AccountStore:
                     return None
 
                 cursor.execute(
-                    "SELECT nutrient_max, moisture_max, stage_vals1, flower_out_put_id_1, poll_out_put_id "
-                    "FROM seed_plant_parameters WHERE id=%s LIMIT 1",
+                    "SELECT plant.nutrient_max, plant.moisture_max, plant.stage_vals1, "
+                    "plant.flower_out_put_id_1, plant.poll_out_put_id, seed.exp "
+                    "FROM seed_plant_parameters AS plant "
+                    "LEFT JOIN type_seeds AS seed ON seed.id=plant.id "
+                    "WHERE plant.id=%s LIMIT 1",
                     (plant_id,),
                 )
                 plant_parameters = cursor.fetchone()
@@ -1774,6 +1814,7 @@ class AccountStore:
                 next_time = int(100 / stage_vals1 + 0.5) if stage_vals1 > 0 else 0
                 flower_id = max(0, int(plant_parameters.get("flower_out_put_id_1") or 0))
                 pollen_id = max(0, int(plant_parameters.get("poll_out_put_id") or 0))
+                planting_exp = max(0, int(plant_parameters.get("exp") or 0))
                 nutrient = nutrient_max * 100000 // 2
                 moisture = moisture_max * 100000 // 2
 
@@ -1856,6 +1897,10 @@ class AccountStore:
                         values,
                     )
                 cursor.execute(
+                    "UPDATE player_profiles SET plant_grade=plant_grade+%s WHERE user_id=%s",
+                    (planting_exp, user_id),
+                )
+                cursor.execute(
                     "SELECT * FROM player_home_plants WHERE user_id=%s AND plot_no=%s",
                     (user_id, plot_no),
                 )
@@ -1895,7 +1940,10 @@ class AccountStore:
                     self.connection.rollback()
                     return None
                 cursor.execute(
-                    "SELECT * FROM player_home_plants WHERE user_id=%s AND plot_no=%s FOR UPDATE",
+                    "SELECT plant.*, seed.pet_id, seed.exp_good "
+                    "FROM player_home_plants AS plant "
+                    "LEFT JOIN seed_plant_parameters AS seed ON seed.id=plant.plant_id "
+                    "WHERE plant.user_id=%s AND plant.plot_no=%s FOR UPDATE",
                     (user_id, plot_no),
                 )
                 plant = cursor.fetchone()
@@ -1938,14 +1986,8 @@ class AccountStore:
                 elif tool_type == 3:
                     flower_id = int(plant.get("flower_id") or 0)
                     flower_count = int(plant.get("flower_count") or 0)
-                    cursor.execute(
-                        "SELECT pet_id, exp_good, exp_bad, flower_out_put_id_1 "
-                        "FROM seed_plant_parameters WHERE id=%s LIMIT 1",
-                        (int(plant.get("plant_id") or 0),),
-                    )
-                    plant_parameters = cursor.fetchone() or {}
-                    pet_id = max(0, int(plant_parameters.get("pet_id") or 0))
-                    harvest_exp = max(0, int(plant_parameters.get("exp_good") or 0))
+                    pet_id = max(0, int(plant.get("pet_id") or 0))
+                    harvest_exp = max(0, int(plant.get("exp_good") or 0))
                     if pet_id:
                         # Element flowers produce a pet rather than an item.
                         # Keep the one-pet rule inside this transaction so two
@@ -1988,6 +2030,10 @@ class AccountStore:
                     if cursor.rowcount != 1:
                         self.connection.rollback()
                         return None
+                    cursor.execute(
+                        "UPDATE player_profiles SET plant_grade=plant_grade+%s WHERE user_id=%s",
+                        (harvest_exp, user_id),
+                    )
                 else:
                     updates = {}
                     plant_parameters = None
