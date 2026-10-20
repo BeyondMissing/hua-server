@@ -11,7 +11,11 @@ from admin.core.validation import validate_account
 class AccountRepository:
     """Parameterised account queries against the existing accounts table."""
 
-    INITIAL_CLOTH_IDS = (100004, 100007, 100008, 100009, 100010, 100011, 100012, 100013)
+    INITIAL_CLOTH_IDS = (
+        100004, 100007, 100008, 100009, 100010, 100011, 100012, 100013,
+        100444, 100445, 100446, 100447, 100448, 100449, 100450, 100451,
+        100452, 100453, 100454, 100455, 100456, 100457, 100458
+    )
 
     def __init__(self, mysql_config: dict[str, Any]):
         self.mysql_config = dict(mysql_config)

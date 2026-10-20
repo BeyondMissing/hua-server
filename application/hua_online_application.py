@@ -1427,7 +1427,7 @@ class HuaOnlineApplication:
         if len(packet.payload) != 12:
             return Response(user_id=account.user_id, status=400)
         event_id, job_id, step = struct.unpack(">3I", packet.payload)
-        if event_id in (4, 6):
+        if event_id in (3, 4, 5, 6, 21, 22, 1900005):
             try:
                 self.accounts.complete_task_event(account.user_id, job_id, step)
             except Exception:
