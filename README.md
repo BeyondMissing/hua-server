@@ -38,7 +38,7 @@
 
 1. 创建 Python 虚拟环境
 ```
-python -m venv .vnev
+python -m venv .venv
 ```
 2. 进入虚拟环境
 ```
@@ -56,7 +56,7 @@ python main.py
 
 ### 运行 Web 服务
 
-1. 下载前端文件： 请在发布页面下载前端文件，并解压缩到独立的文件夹下。然后切换到该目录，命令行运行 `python -m http.server -p 8000` 启动 Web 服务器，或者直接运行 `run-web.bat`
+1. 下载前端文件： 请在发布页面下载前端文件，并解压缩到独立的文件夹下。然后切换到该目录，命令行运行 `python -m http.server 8000` 启动 Web 服务器，或者直接运行 `run-web.bat`
 
 2. 安装浏览器： 推荐使用 Basilisk 开源浏览器，并安装移除了 Timebomb（时间炸弹）的 Adobe Flash 插件。如安装困难，部分国产浏览器可以作为替代方案。
 
